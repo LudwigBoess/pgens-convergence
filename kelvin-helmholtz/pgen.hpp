@@ -16,44 +16,6 @@
 namespace user {
   using namespace ntt;
 
-  template <SimEngine::type S, class M>
-  struct KHDistribution : public arch::EnergyDistribution<S, M> {
-    KHDistribution(const M&              metric,
-                   random_number_pool_t& pool,
-                   real_t                temperature,
-                   real_t                drift_vel,
-                   in                    drift_dir,
-                   real_t                width,
-                   real_t                y1,
-                   real_t                y2)
-      : arch::EnergyDistribution<S, M> { metric }
-      , pool { pool }
-      , temperature { temperature }
-      , drift_vel { drift_vel }
-      , drift_dir { static_cast<unsigned short>(drift_dir) }
-      , width { width }
-      , y1 { y1 }
-      , y2 { y2 } {}
-
-    Inline void operator()(const coord_t<M::Dim>& x_Ph,
-                           vec_t<Dim::_3D>&       v,
-                           spidx_t = 0) const {
-      arch::SampleFromMaxwellian<S, false>(v, pool, temperature);
-      v[drift_dir] += drift_vel;
-      auto generator = pool.get_state();
-      v[0] += width * (generator.drand(0.0, 1.0) - HALF);
-      v[1] += width * (generator.drand(0.0, 1.0) - HALF);
-      pool.free_state(generator);
-    }
-
-  private:
-    random_number_pool_t pool;
-
-    const real_t         temperature, drift_vel;
-    const unsigned short drift_dir;
-    const real_t         width, y1, y2;
-  };
-
   template <Dimension D>
   struct InitFields {
     InitFields(real_t bmag) : bmag { bmag } {}
@@ -161,63 +123,17 @@ namespace user {
       const auto low_density_injector = arch::UniformInjector<S, M, arch::Maxwellian>(low_density_dist,
                                                                         { 1, 2 });
 
-      // const auto low_density_dist  = KHDistribution<S, M>(domain.mesh.metric,
-      //                                           domain.random_pool,
-      //                                           TWO * temperature,
-      //                                           drift_vel,
-      //                                           drift_dir,
-      //                                           width,
-      //                                           y1,
-      //                                           y2);
-
-      // const auto low_density_injector = arch::UniformInjector<S, M, KHDistribution>(low_density_dist,
-      //                                                                   { 1, 2 });
-
-      // // energy distribution of the particles in the low density regions
-      // const auto low_density_dist  = arch::TwoTemperatureMaxwellian<S, M>(
-      //   domain.mesh.metric,
-      //   domain.random_pool,
-      //   { TWO * temperature * domain.species[1].mass(),
-      //     TWO * temperature },
-      //   { 1, 2 }, drift_vel, in::x1);
-
-      // const auto low_density_injector = arch::UniformInjector<S, M, arch::TwoTemperatureMaxwellian>(low_density_dist,
-      //                                                                   { 1, 2 });
-
 
       // energy distribution of the particles in the high density regions
       const auto high_density_dist  = arch::Maxwellian<S, M>(domain.mesh.metric,
                                                       domain.random_pool,
                                                       temperature,
                                                       -drift_vel,
-                                                      static_cast<unsigned short>(drift_dir));
+                                                      in::x1);
 
       const auto high_density_injector = arch::UniformInjector<S, M, arch::Maxwellian>(high_density_dist,
                                                                         { 1, 2 });
 
-      // const auto high_density_dist  = KHDistribution<S, M>(domain.mesh.metric,
-      //                                           domain.random_pool,
-      //                                           temperature,
-      //                                           -drift_vel,
-      //                                           drift_dir,
-      //                                           width,
-      //                                           y1,
-      //                                           y2);
-
-      // const auto high_density_injector = arch::UniformInjector<S, M, KHDistribution>(high_density_dist,
-      //                                                                   { 1, 2 });
-
-      // // energy distribution of the particles in the low density regions
-      // const auto high_density_dist  = arch::TwoTemperatureMaxwellian<S, M>(
-      //   domain.mesh.metric,
-      //   domain.random_pool,
-      //   { temperature * domain.species[1].mass(),
-      //     temperature },
-      //   { 1, 2 },
-      //   -drift_vel, in::x1);
-
-      // const auto high_density_injector = arch::UniformInjector<S, M, arch::TwoTemperatureMaxwellian>(high_density_dist,
-      //                                                                   { 1, 2 });
 
       // inject uniformly within the defined boxes
 
