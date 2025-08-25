@@ -67,7 +67,7 @@ namespace user {
     inline void InitPrtls(Domain<S, M>& domain) {
 
       // background plasma
-      const auto nspec = domain.species.size();
+      const auto nspec = domain.species.size() - 2;
       for (auto n = 0u; n < nspec; n += 2) {
         const auto drift_1  = prmvec_t { drifts_in_x[n],
                                         drifts_in_y[n],
@@ -109,7 +109,20 @@ namespace user {
       const auto ux3_e = params.template get<std::vector<real_t>>("setup.ux3_e",
                                                                   empty);
 
-
+      const auto x1_i  = params.template get<std::vector<real_t>>("setup.x1_i",
+                                                                 empty);
+      const auto x2_i  = params.template get<std::vector<real_t>>("setup.x2_i",
+                                                                 empty);
+      const auto x3_i  = params.template get<std::vector<real_t>>("setup.x3_i",
+                                                                 empty);
+      const auto phi_i = params.template get<std::vector<real_t>>("setup.phi_i",
+                                                                  empty);
+      const auto ux1_i = params.template get<std::vector<real_t>>("setup.ux1_i",
+                                                                  empty);
+      const auto ux2_i = params.template get<std::vector<real_t>>("setup.ux2_i",
+                                                                  empty);
+      const auto ux3_i = params.template get<std::vector<real_t>>("setup.ux3_i",
+                                                                  empty);
       std::map<std::string, std::vector<real_t>> data_e {
         {  "x1",  x1_e },
         {  "x2",  x2_e },
@@ -117,14 +130,24 @@ namespace user {
         { "ux2", ux2_e },
         { "ux3", ux3_e }
       };
-
+      std::map<std::string, std::vector<real_t>> data_i {
+        {  "x1",  x1_i },
+        {  "x2",  x2_i },
+        { "ux1", ux1_i },
+        { "ux2", ux2_i },
+        { "ux3", ux3_i }
+      };
       if constexpr (M::CoordType == Coord::Cart or D == Dim::_3D) {
         data_e["x3"] = x3_e;
+        data_i["x3"] = x3_i;
       } else if constexpr (D == Dim::_2D) {
         data_e["phi"] = phi_e;
+        data_i["phi"] = phi_i;
       }
 
       arch::InjectGlobally<S, M>(global_domain, domain, (spidx_t)3, data_e);
+      arch::InjectGlobally<S, M>(global_domain, domain, (spidx_t)4, data_i);
+
     }
   };
 

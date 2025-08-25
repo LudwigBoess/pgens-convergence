@@ -45,6 +45,12 @@
     charge   = -1.0
     maxnpart = 1e1
 
+  [[particles.species]]
+    label    = "e+_b"
+    mass     = 1.0
+    charge   = 0.0
+    maxnpart = 1e1
+
 [setup]
   # Drift 4-velocities for each species in all 3 directions
   #   @type: array of floats (length = nspec)
@@ -69,12 +75,20 @@
   ux2_e = [0.0]
   ux3_e = [0.0]
 
+  x1_i  = [0.0]
+  x2_i  = [0.0]
+  x3_i  = [0.0]
+  ux1_i = [0.0]
+  ux2_i = [0.0]
+  ux3_i = [0.0]
+
 [output]
   format   = "hdf5"
   interval = 5
 
-#  [output.fields]
-#    quantities = ["N_1", "N_2", "E", "B", "J"]
+  [output.fields]
+    enable = false
+    quantities = ["N_1", "N_2", "E", "B", "J"]
 
   [output.particles]
     enable = true 
