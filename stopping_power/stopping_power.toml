@@ -1,0 +1,88 @@
+[simulation]
+  name    = "stopping_power"
+  engine  = "srpic"
+  runtime = 1.0
+
+[grid]
+  resolution = [512, 512]
+  extent     = [[0.0, 0.512], [0.0, 0.512]]
+
+  [grid.metric]
+    metric = "minkowski"
+
+  [grid.boundaries]
+    fields    = [["PERIODIC"], ["PERIODIC"]]
+    particles = [["PERIODIC"], ["PERIODIC"]]
+
+[scales]
+  larmor0    = 0.1
+  skindepth0 = 0.01
+
+[algorithms]
+  current_filters = 0
+
+  [algorithms.timestep]
+    CFL = 0.5
+
+[particles]
+  ppc0 = 16.0
+
+  [[particles.species]]
+    label    = "e-_p"
+    mass     = 1.0
+    charge   = -1.0
+    maxnpart = 1e8
+
+  [[particles.species]]
+    label    = "e+_p"
+    mass     = 1.0
+    charge   = 1.0
+    maxnpart = 1e8
+
+  [[particles.species]]
+    label    = "e-_b"
+    mass     = 1.0
+    charge   = -1.0
+    maxnpart = 1e1
+
+[setup]
+  # Drift 4-velocities for each species in all 3 directions
+  #   @type: array of floats (length = nspec)
+  #   @default: [ 0.0, ... ]
+  drifts_in_x = [0.0, 0.0]
+  drifts_in_y = [0.0, 0.0]
+  drifts_in_z = [0.0, 0.0]
+  # Pair-wise species densities in units of n0
+  #   @type: array of floats (length = nspec/2)
+  #   @default: [ 2 / nspec, ... ]
+  densities = [0.5]
+  # Species temperatures in units of m0 (c^2)
+  #   @type: array of floats (length = nspec)
+  #   @default: [ 0.0, ... ]
+  temperatures = [1e-4, 1e-4]
+  # 
+  # Single particle injection 
+  x1_e  = [0.064]
+  x2_e  = [0.256]
+  x3_e  = [0.0]
+  ux1_e = [10.0]
+  ux2_e = [0.0]
+  ux3_e = [0.0]
+
+[output]
+  format   = "hdf5"
+  interval = 5
+
+#  [output.fields]
+#    quantities = ["N_1", "N_2", "E", "B", "J"]
+
+  [output.particles]
+    enable = true 
+    species = 3
+    stride = 1
+
+  [output.spectra]
+    enable = false
+
+[checkpoint]
+  keep = 0

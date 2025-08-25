@@ -1,0 +1,65 @@
+[simulation]
+  name    = "khi"
+  engine  = "srpic"
+  runtime = 4.0
+
+[grid]
+  resolution = [1024, 1024]
+  extent     = [[-0.5, 0.5], [-0.5, 0.5]]
+
+  [grid.metric]
+    metric = "minkowski"
+
+  [grid.boundaries]
+    fields    = [["PERIODIC"], ["PERIODIC"]]
+    particles = [["PERIODIC"], ["PERIODIC"]]
+
+[scales]
+  larmor0    = 0.01
+  skindepth0 = 0.005
+
+[algorithms]
+  current_filters = 8
+
+  [algorithms.timestep]
+    CFL = 0.5
+
+[particles]
+  ppc0 = 16.0
+
+  [[particles.species]]
+    label    = "e-"
+    mass     = 1.0
+    charge   = -1.0
+    maxnpart = 4e7
+
+  [[particles.species]]
+    label    = "p+"
+    mass     = 100.0
+    charge   = 1.0
+    maxnpart = 4e7
+
+[setup]
+  drift_ampl      = 0.5
+  sonic_mach      = 0.5
+  inv_alfven_mach = 0.0
+  density         = 1.0
+  drift_dir       = 0
+  width           = 0.01
+  y1              = -0.25
+  y2              = 0.25
+
+[output]
+  interval_time = 0.02
+
+  [output.fields]
+    quantities = ["N_1", "N_2", "E", "B", "J", "T00_1", "T00_2", "V_1", "V_2"]
+
+  [output.particles]
+    enable = false
+
+  [output.spectra]
+    enable = false
+
+[diagnostics]
+  colored_stdout = true

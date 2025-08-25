@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="85mm"
+   height="80mm"
+   viewBox="0 0 85 80"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (ebf0e94, 2025-05-08)"
+   sodipodi:docname="schematic.svg"
+   inkscape:export-filename="schematic.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.0792508"
+     inkscape:cx="156.3063"
+     inkscape:cy="183.96049"
+     inkscape:window-width="2560"
+     inkscape:window-height="1369"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:lockguides="false" />
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient24"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#1a1a1a;stop-opacity:0;"
+         offset="0"
+         id="stop24" />
+      <stop
+         style="stop-color:#1a1a1a;stop-opacity:0;"
+         offset="1"
+         id="stop25" />
+    </linearGradient>
+    <marker
+       style="overflow:visible"
+       id="marker8"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Stylized triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="m 6,0 c -3,1 -7,3 -9,5 0,0 0,-4 2,-5 -2,-1 -2,-5 -2,-5 2,2 6,4 9,5 z"
+         id="path8" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ArrowTriangleStylized"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Stylized triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="m 6,0 c -3,1 -7,3 -9,5 0,0 0,-4 2,-5 -2,-1 -2,-5 -2,-5 2,2 6,4 9,5 z"
+         id="path5" />
+    </marker>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient24"
+       id="linearGradient25"
+       x1="16.44635"
+       y1="15.873651"
+       x2="67.068062"
+       y2="15.873651"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;stroke-width:0.263454"
+       id="rect2"
+       width="85"
+       height="80"
+       x="0"
+       y="0" />
+    <rect
+       style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:0.26606;stroke-opacity:1"
+       id="rect1"
+       width="79.73394"
+       height="79.73394"
+       x="0.13303"
+       y="0.13303" />
+    <path
+       style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:0.265442;stroke-dasharray:0.265442, 0.265442;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 0,20.132721 H 80"
+       id="path2"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:0.265442;stroke-dasharray:0.265442, 0.265442;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 0,60.132721 H 80"
+       id="path3"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       x="81.312347"
+       y="20.686779"
+       id="text3"><tspan
+         sodipodi:role="line"
+         id="tspan3"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-opacity:1"
+         x="81.312347"
+         y="20.686779">y1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       x="81.312347"
+       y="60.686779"
+       id="text4"><tspan
+         sodipodi:role="line"
+         id="tspan4"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none"
+         x="81.312347"
+         y="60.686779">y2</tspan></text>
+    <path
+       style="fill:#000000;fill-opacity:0;stroke:#008000;stroke-width:0.264052;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#ArrowTriangleStylized)"
+       d="m 25,10.874678 c 28.932027,0 28.932027,0 28.932027,0"
+       id="path4" />
+    <path
+       style="fill:#008000;fill-opacity:0;stroke:#008000;stroke-width:0.264052;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#ArrowTriangleStylized)"
+       d="m 25,70 c 28.932027,0 28.932027,0 28.932027,0"
+       id="path6" />
+    <path
+       style="fill:#000000;fill-opacity:0;stroke:#008000;stroke-width:0.264052;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#marker8)"
+       d="m 25,40.872623 c 28.932027,0 28.932027,0 28.932027,0"
+       id="path7" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;line-height:1;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       x="2.490205"
+       y="4.4705701"
+       id="text8"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:1;font-family:Monospace;-inkscape-font-specification:Monospace;fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none"
+         x="2.490205"
+         y="4.4705701"
+         id="tspan34"><tspan
+   style="fill:#008000"
+   id="tspan37">drift_vel</tspan> = sound_speed * <tspan
+   style="line-height:1;fill:#ff0000"
+   id="tspan26">sonic_mach</tspan></tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:1;font-family:Monospace;-inkscape-font-specification:Monospace;fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none"
+         x="2.490205"
+         y="7.717175"
+         id="tspan35">sound_speed = sqrt(5/3 * <tspan
+   style="fill:#ff0000"
+   id="tspan36">temperature</tspan>)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Monospace;-inkscape-font-specification:Monospace;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       x="2.490205"
+       y="30.168957"
+       id="text13"><tspan
+         sodipodi:role="line"
+         id="tspan13"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#1a1a1a;stroke:none;stroke-width:0.265;stroke-dasharray:none"
+         x="2.490205"
+         y="30.168957">background plasma parameters:</tspan><tspan
+         sodipodi:role="line"
+         style="stroke:none;stroke-width:0.265;stroke-dasharray:none"
+         x="2.490205"
+         y="34.137707"
+         id="tspan28">density<tspan
+   style="fill:#1a1a1a"
+   id="tspan27">, </tspan>temperature</tspan></text>
+    <path
+       style="fill:#000000;fill-opacity:0;stroke:#0000ff;stroke-width:0.186705;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#ArrowTriangleStylized)"
+       d="m 32.389141,53.645598 c 14.464799,0 14.464799,0 14.464799,0"
+       id="path14" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:Monospace;-inkscape-font-specification:Monospace;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:0.265;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       x="2.5956249"
+       y="55.902462"
+       id="text14"><tspan
+         sodipodi:role="line"
+         id="tspan14"
+         style="font-size:2.11667px;stroke:#000000;stroke-width:0.265;stroke-dasharray:none;stroke-opacity:1"
+         x="2.5956249"
+         y="55.902462"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#0000ff;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-opacity:1"
+   id="tspan17">B-field</tspan><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#0000ff;stroke:none;stroke-width:0.265;stroke-dasharray:none"
+   id="tspan21">:</tspan> <tspan
+   style="fill:#1a1a1a;stroke:none;stroke-width:0.265;stroke-dasharray:none"
+   id="tspan22" /></tspan><tspan
+         sodipodi:role="line"
+         style="font-size:2.11667px;stroke:#000000;stroke-width:0.265;stroke-dasharray:none;stroke-opacity:1"
+         x="2.5956249"
+         y="58.548298"
+         id="tspan39"><tspan
+           style="fill:#1a1a1a;stroke:none;stroke-width:0.265;stroke-dasharray:none"
+           id="tspan40">Bx = </tspan><tspan
+           style="fill:#ff0000;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-opacity:1"
+           id="tspan15">inv_alfven_mach</tspan><tspan
+           style="fill:#1a1a1a;stroke:none;stroke-width:0.265;stroke-dasharray:none"
+           id="tspan23"> * drift_vel * </tspan><tspan
+           style="fill:#ff0000;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-opacity:1"
+           id="tspan16">density</tspan><tspan
+           style="fill:#1a1a1a;stroke:none;stroke-width:0.265;stroke-dasharray:none"
+           id="tspan24"> / sqrt(sigma0)</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       x="13.424574"
+       y="75.522415"
+       id="text19"><tspan
+         sodipodi:role="line"
+         id="tspan19"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace;fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-opacity:1"
+         x="13.424574"
+         y="75.522415"><tspan
+   style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-opacity:1"
+   id="tspan20">drift_dir</tspan> = {0, 2} = {x, z}</tspan></text>
+    <path
+       style="fill:#000000;fill-opacity:0;stroke:#d45500;stroke-width:0.115681;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#ArrowTriangleStylized)"
+       d="m 75.835804,15.732573 v 2.513252"
+       id="path37"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#000000;fill-opacity:0;stroke:#d45500;stroke-width:0.115681;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#ArrowTriangleStylized)"
+       d="M 75.835805,24.892785 V 22.379533"
+       id="path38"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       x="63.946423"
+       y="18.203474"
+       id="text38"><tspan
+         sodipodi:role="line"
+         id="tspan38"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none;stroke-opacity:1"
+         x="63.946423"
+         y="18.203474">width</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:1;font-family:sans-serif;-inkscape-font-specification:sans-serif;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#008000;fill-opacity:1;stroke:#d45500;stroke-width:0.264999;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       x="13.452479"
+       y="67.187668"
+       id="text41"><tspan
+         sodipodi:role="line"
+         id="tspan41"
+         style="font-size:3.175px;fill:#008000;fill-opacity:1;stroke:none;stroke-width:0.265"
+         x="13.452479"
+         y="67.187668">direction of the drift</tspan></text>
+  </g>
+</svg>
