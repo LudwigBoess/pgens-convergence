@@ -1,11 +1,11 @@
 [simulation]
-  name    = "stopping_power"
+  name    = "16ppc"
   engine  = "srpic"
-  runtime = 10.0
+  runtime = 30.0
 
 [grid]
-  resolution = [2048, 2048]
-  extent     = [[-1.024, 1.024], [-1.024, 1.024]]
+  resolution = [4096, 4096]
+  extent     = [[-2.048, 2.048], [-2.048, 2.048]]
 
   [grid.metric]
     metric = "minkowski"
@@ -31,13 +31,13 @@
     label    = "e-_p"
     mass     = 1.0
     charge   = -1.0
-    maxnpart = 1e8
+    maxnpart = 8e8
 
   [[particles.species]]
     label    = "e+_p"
-    mass     = 1.0
+    mass     = 20.0
     charge   = 1.0
-    maxnpart = 1e8
+    maxnpart = 8e8
 
   [[particles.species]]
     label    = "e-_b"
@@ -61,11 +61,11 @@
   # Pair-wise species densities in units of n0
   #   @type: array of floats (length = nspec/2)
   #   @default: [ 2 / nspec, ... ]
-  densities = [0.5]
+  densities = [1.0]
   # Species temperatures in units of m0 (c^2)
   #   @type: array of floats (length = nspec)
   #   @default: [ 0.0, ... ]
-  temperatures = [1e-4, 1e-4]
+  temperatures = [1e-2, 1e-2]
   # 
   # Single particle injection 
   x1_e  = [0.064]
@@ -83,8 +83,8 @@
   ux3_i = [0.0]
 
 [output]
-  format   = "hdf5"
-  interval = 10
+  format   = "BPFile"
+  interval_time = 0.1
 
   [output.fields]
     enable = false
@@ -99,4 +99,8 @@
     enable = false
 
 [checkpoint]
-  keep = 0
+  keep = 1
+
+[diagnostics]
+  log_level = "WARNING"
+  blocking_timers = true

@@ -68,30 +68,29 @@ namespace user {
 
       // background plasma
       const auto nspec = domain.species.size() - 2;
-      for (auto n = 0u; n < nspec; n += 2) {
-        const auto drift_1  = prmvec_t { drifts_in_x[n],
-                                        drifts_in_y[n],
-                                        drifts_in_z[n] };
-        const auto drift_2  = prmvec_t { drifts_in_x[n + 1],
-                                        drifts_in_y[n + 1],
-                                        drifts_in_z[n + 1] };
-        const auto injector = arch::experimental::
-          UniformInjector<S, M, arch::experimental::Maxwellian, arch::experimental::Maxwellian>(
-            arch::experimental::Maxwellian<S, M>(domain.mesh.metric,
-                                                 domain.random_pool,
-                                                 temperatures[n],
-                                                 drift_1),
-            arch::experimental::Maxwellian<S, M>(domain.mesh.metric,
-                                                 domain.random_pool,
-                                                 temperatures[n + 1],
-                                                 drift_2),
-            { n + 1, n + 2 });
-        arch::experimental::InjectUniform<S, M, decltype(injector)>(
-          params,
-          domain,
-          injector,
-          densities[n / 2]);
-      }
+      const auto drift_1  = prmvec_t { drifts_in_x[0],
+                                      drifts_in_y[0],
+                                      drifts_in_z[0] };
+      const auto drift_2  = prmvec_t { drifts_in_x[1],
+                                      drifts_in_y[1],
+                                      drifts_in_z[1] };
+      const auto injector = arch::experimental::
+        UniformInjector<S, M, arch::experimental::Maxwellian, arch::experimental::Maxwellian>(
+          arch::experimental::Maxwellian<S, M>(domain.mesh.metric,
+                                               domain.random_pool,
+                                               domain.species[1].mass() * temperatures[0],
+                                               drift_1),
+          arch::experimental::Maxwellian<S, M>(domain.mesh.metric,
+                                               domain.random_pool,
+                                               temperatures[1],
+                                               drift_2),
+          { 1, 2 });
+      arch::experimental::InjectUniform<S, M, decltype(injector)>(
+        params,
+        domain,
+        injector,
+        densities[0]);
+      
 
       const auto empty = std::vector<real_t> {};
       const auto x1_e  = params.template get<std::vector<real_t>>("setup.x1_e",
