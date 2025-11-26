@@ -11,6 +11,7 @@
 #include "archetypes/energy_dist.h"
 #include "archetypes/particle_injector.h"
 #include "archetypes/problem_generator.h"
+#include "archetypes/utils.h"
 #include "framework/domain/domain.h"
 #include "framework/domain/metadomain.h"
 
@@ -94,7 +95,7 @@ namespace user {
     const std::vector<std::vector<real_t>> wavenumbers;
     const std::size_t                      n_modes;
     const real_t                           dB, Lx, Ly, Lz;
-    const int                              seed; 
+    const unsigned int                     seed; 
 
   public:
     array_t<real_t**> k;
@@ -103,7 +104,7 @@ namespace user {
   };
 
   inline auto init_pool(int seed) -> unsigned int {
-    if (seed < 0) {
+    if (seed == 0) {
       unsigned int new_seed = static_cast<unsigned int>(rand());
 #if defined(MPI_ENABLED)
       MPI_Bcast(&new_seed, 1, MPI_UNSIGNED, MPI_ROOT_RANK, MPI_COMM_WORLD);
@@ -159,7 +160,7 @@ namespace user {
 
     const real_t                     temperature, dB;
     const real_t                     Lx, Ly, Lz;
-    const int                        random_seed;
+    const unsigned int               random_seed;
     std::vector<std::vector<real_t>> wavenumbers;
     random_number_pool_t             random_pool;
 
@@ -175,7 +176,7 @@ namespace user {
       , temperature { p.template get<real_t>("setup.temperature") }
       , dB { p.template get<real_t>("setup.dB", ONE) }
       , wavenumbers { init_wavenumbers<D>() }
-      , random_seed { p.template get<int>("setup.seed", -1) }
+      , random_seed { p.template get<unsigned int>("setup.seed", 42) }
       , random_pool { init_pool(random_seed) }
       , Lx { global_domain.mesh().extent(in::x1).second -
              global_domain.mesh().extent(in::x1).first }
@@ -185,18 +186,8 @@ namespace user {
              global_domain.mesh().extent(in::x3).first }
       , init_flds { dB, wavenumbers, random_seed, Lx, Ly, Lz } {};
 
-      inline void InitPrtls(Domain<S, M>& local_domain) {
-        const auto energy_dist  = arch::Maxwellian<S, M>(local_domain.mesh.metric,
-                                                        local_domain.random_pool,
-                                                        temperature);
-        const auto spatial_dist = arch::UniformInjector<S, M, arch::Maxwellian, arch::Maxwellian>(
-          energy_dist,energy_dist,
-          { 1, 2 });
-        arch::InjectUniform<S, M, arch::UniformInjector<S, M, arch::Maxwellian,arch::Maxwellian>>(
-          params,
-          local_domain,
-          spatial_dist,
-          ONE);
+      inline void InitPrtls(Domain<S, M>& domain) {
+        arch::InjectUniformMaxwellian<S, M>(params, domain, ONE, temperature, { 1, 2 });
       };
   };
 } // namespace user
