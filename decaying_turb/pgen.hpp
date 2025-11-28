@@ -57,7 +57,7 @@ namespace user {
       for (auto i = 0u; i < n_modes; i++) {
         auto k_perp = math::sqrt(
           k_host(0, i) * k_host(0, i) + k_host(1, i) * k_host(1, i));
-	      real_t phase = static_cast <real_t> (rand()) / static_cast <real_t> (RAND_MAX) * constant::TWO_PI;
+	      phase_host(i) = static_cast <real_t> (rand()) / static_cast <real_t> (RAND_MAX) * constant::TWO_PI;
         A0_host(i) = dB / math::sqrt((real_t)n_modes) / k_perp;
       };
       Kokkos::deep_copy(A0, A0_host);
@@ -70,7 +70,7 @@ namespace user {
       if constexpr(D==Dim::_2D){
         for (auto i = 0; i < n_modes; i++) {
           auto k_dot_r  = k(0, i) * x_Ph[0] + k(1, i) * x_Ph[1];
-          bx1_0        -= TWO * k(1, i) * A0(i) * math::cos( k_dot_r + phase(i) );
+          bx1_0        -= TWO * k(1, i) * A0(i) * math::sin( k_dot_r + phase(i) );
         }
       }
       return bx1_0;
@@ -81,7 +81,7 @@ namespace user {
       if constexpr (D==Dim::_2D){
         for (auto i = 0; i < n_modes; i++) {
           auto k_dot_r  = k(0, i) * x_Ph[0] + k(1, i) * x_Ph[1];
-          bx2_0        += TWO * k(0, i) * A0(i) * math::cos( k_dot_r + phase(i) );
+          bx2_0        += TWO * k(0, i) * A0(i) * math::sin( k_dot_r + phase(i) );
         }
       }
       return bx2_0;
@@ -116,32 +116,38 @@ namespace user {
 
   template <Dimension D>
   inline auto init_wavenumbers() -> std::vector<std::vector<real_t>> {
-    if constexpr (D == Dim::_2D) {
-      return {
-        {  1, 0 },
-        {  0, 1 },
-        {  1, 1 },
-        { -1, 1 },
-        //{ -1, 0 },
-        //{ 0, -1 },
-        //{ -1,-1 },
-        //{ 1, -1}
-      };
-    } else if constexpr (D == Dim::_3D) {
-      return {
-          {  1,  0, 1 },
-          {  0,  1, 1 },
-          { -1,  0, 1 },
-          {  0, -1, 1 },
-          {  1,  0,-1 },
-          {  0,  1,-1 },
-          { -1,  0,-1 },
-          {  0, -1,-1 }
-      };
-    } else {
-      raise::Error("Invalid dimension", HERE);
-      return {};
-    }
+      if constexpr (D == Dim::_2D) {
+          std::vector<std::vector<real_t>> wavenumbers;
+          for (int y = 1; y <= 4; y++) {
+              for (int x = 1; x <= 4; x++) {
+  
+                  if (x == 0 && y == 0)
+                      continue;
+  
+                  wavenumbers.push_back({
+                      static_cast<real_t>(x),
+                      static_cast<real_t>(y)
+                  });
+              }
+          }
+          return wavenumbers;
+  
+      } else if constexpr (D == Dim::_3D) {
+          return {
+              {  1,  0,  1 },
+              {  0,  1,  1 },
+              { -1,  0,  1 },
+              {  0, -1,  1 },
+              {  1,  0, -1 },
+              {  0,  1, -1 },
+              { -1,  0, -1 },
+              {  0, -1, -1 }
+          };
+  
+      } else {
+          raise::Error("Invalid dimension", HERE);
+          return {};
+      }
   }
 
   template <SimEngine::type S, class M>
