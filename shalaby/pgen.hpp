@@ -5,59 +5,59 @@
 #include "global.h"
 
 #include "arch/kokkos_aliases.h"
-#include "arch/traits.h"
+#include "utils/error.h"
 #include "utils/numeric.h"
 
-#include "archetypes/energy_dist.h"
-#include "archetypes/particle_injector.h"
 #include "archetypes/problem_generator.h"
-#include "archetypes/spatial_dist.h"
+#include "archetypes/traits.h"
 #include "archetypes/utils.h"
+#include "archetypes/spatial_dist.h"
+#include "framework/domain/domain.h"
 #include "framework/domain/metadomain.h"
 
-#include "kernels/particle_moments.hpp"
 
 namespace user {
   using namespace ntt;
 
-  template <SimEngine::type S, class M>
-  struct ConstDensity : public arch::SpatialDistribution<S, M> {
-    ConstDensity(const M& metric)
-      : arch::SpatialDistribution<S, M> { metric } {}
+  template <Dimension D>
+  struct InitFields {
+    InitFields(real_t wave_amplitude, real_t lambda)
+      : wave_amplitude { wave_amplitude }
+      , lambda { lambda } {}
 
-    Inline auto operator()(const coord_t<M::Dim>& x_Ph) const -> real_t {
-      return ONE;
-    }
-  };
-
-  template <SimEngine::type S, class M>
-  struct MaxwellWave : public arch::EnergyDistribution<S, M> {
-    
-    MaxwellWave(const M& metric, random_number_pool_t& pool, real_t temp, real_t A_wave, real_t lambda_L, real_t sign) 
-        : arch::EnergyDistribution<S, M>{metric}
-        , pool {pool} 
-        , temp { temp } 
-        , A_wave { A_wave }
-        , lambda_L { lambda_L }
-        , sign { sign }  {}
-
-    Inline void operator()(const coord_t<M::Dim>& x_Ph, vec_t<Dim::_3D>& v) const {
-      arch::JuttnerSinge(v, temp, pool);
-      v[0] += sign * math::sqrt(A_wave) / constant::PI * lambda_L * math::cos(constant::TWO_PI * x_Ph[0] / lambda_L);
+    // electric field components
+    Inline auto ex1(const coord_t<D>& x_Ph) const -> real_t {
+      return -wave_amplitude * math::sin(constant::TWO_PI * x_Ph[0] / lambda);
     }
 
   private:
-    random_number_pool_t pool;
-    real_t temp, A_wave, lambda_L, sign;
+    const real_t wave_amplitude, lambda;
+  };
+
+    template <SimEngine::type S, class M>
+  struct DensityWave : public arch::SpatialDistribution<S, M> {
+    DensityWave(const M& metric, real_t lambda)
+      : arch::SpatialDistribution<S, M> { metric }
+      , lambda { lambda } {}
+
+    Inline auto operator()(const coord_t<M::Dim>& x_Ph) const -> real_t {
+        return HALF * (ONE + math::cos(constant::TWO_PI * x_Ph[0] / lambda));
+    }
+
+  private:
+    const real_t lambda;
   };
 
 
   template <SimEngine::type S, class M>
   struct PGen : public arch::ProblemGenerator<S, M> {
     // compatibility traits for the problem generator
-    static constexpr auto engines { traits::compatible_with<SimEngine::SRPIC>::value };
-    static constexpr auto metrics { traits::compatible_with<Metric::Minkowski>::value };
-    static constexpr auto dimensions { traits::compatible_with<Dim::_1D, Dim::_2D, Dim::_3D>::value };
+    static constexpr auto engines =
+      arch::traits::pgen::compatible_with<SimEngine::SRPIC>::value;
+    static constexpr auto metrics =
+      arch::traits::pgen::compatible_with<Metric::Minkowski>::value;
+    static constexpr auto dimensions =
+      arch::traits::pgen::compatible_with<Dim::_1D, Dim::_2D, Dim::_3D>::value;
 
     // for easy access to variables in the child class
     using arch::ProblemGenerator<S, M>::D;
@@ -71,48 +71,43 @@ namespace user {
     // gas properties
     const real_t temperature;
     // wave properties
-    const real_t wave_amplitude, wave_mode;
-    // derived properties
-    const real_t ppc0;
-    const ncells_t ncells0;
+    const real_t wave_amplitude, wave_mode, lambda_L;
+
+    InitFields<D> init_flds;
 
     inline PGen(const SimulationParams& p, Metadomain<S, M>& global_domain)
       : arch::ProblemGenerator<S, M> { p }
       , global_domain { global_domain }
       , global_size { global_domain.mesh().extent(in::x1).second - global_domain.mesh().extent(in::x1).first }
-      , ncells0 { global_domain.mesh().n_all(in::x1) }
       , temperature { p.template get<real_t>("setup.temperature") }
       , wave_amplitude { p.template get<real_t>("setup.wave_amplitude") }
       , wave_mode { p.template get<real_t>("setup.wave_mode") }
-      , ppc0 { p.template get<real_t>("particles.ppc0") }
-      {}
+      , lambda_L { global_size / wave_mode }
+      , init_flds { wave_amplitude, lambda_L } {}
 
     inline PGen() {}
 
     inline void InitPrtls(Domain<S, M>& domain) {
 
-      const auto lambda_L = global_size / wave_mode;
-
       // define cold maxwellian
       const auto T_e = temperature / domain.species[0].mass();
-      const auto maxwellian_e = MaxwellWave<S, M>( domain.mesh.metric, domain.random_pool(), 
-                                                  T_e, wave_amplitude, lambda_L, ONE);
+      const auto maxwellian = arch::Maxwellian<S, M>( domain.mesh.metric, domain.random_pool(), T_e);
 
-      const auto T_p = temperature / domain.species[1].mass();
-      const auto maxwellian_p = MaxwellWave<S, M>( domain.mesh.metric, domain.random_pool(), 
-                                                  T_p, wave_amplitude, lambda_L, -ONE);
-      // define density step
-      
-      const auto density_const = ConstDensity<S, M>(domain.mesh.metric);
+      // define particle distribution
+      const auto density_wave = DensityWave<S, M>(domain.mesh.metric, lambda_L);
+      const auto density_value = FOUR * constant::PI * params.template get<real_t>("scales.skindepth0") * wave_amplitude;
 
       // inject particles with a density step and a maxwellian energy distribution
-      arch::InjectNonUniform<S, M, decltype(maxwellian_e), decltype(maxwellian_p), decltype(density_const)>(
+      arch::InjectNonUniform<S, M, decltype(maxwellian), decltype(maxwellian), decltype(density_wave)>(
         params,
         domain,
         { 1, 2 },
-        { maxwellian_e, maxwellian_p },
-        density_const,
-        ONE);
+        { maxwellian, maxwellian },
+        density_wave,
+        density_value);
+
+        // set ions to zero to save on computational cost
+        domain.species[1].set_npart(0);
 
     }
 
