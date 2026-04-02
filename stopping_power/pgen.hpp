@@ -36,17 +36,24 @@ namespace user {
     using prmvec_t = std::vector<real_t>;
     const Metadomain<S, M>& global_domain;
 
+    const real_t  global_xmin, global_xmax;
     prmvec_t drifts_in_x, drifts_in_y, drifts_in_z;
     prmvec_t densities, temperatures;
+    const real_t drift_ux;
+    const int Nsampled;
 
     inline PGen(const SimulationParams& p, const Metadomain<S, M>& global_domain)
       : arch::ProblemGenerator<S, M> { p }
       , global_domain { global_domain }
+      , global_xmin { global_domain.mesh().extent(in::x1).first }
+      , global_xmax { global_domain.mesh().extent(in::x1).second }
       , drifts_in_x { p.template get<prmvec_t>("setup.drifts_in_x", prmvec_t {}) }
       , drifts_in_y { p.template get<prmvec_t>("setup.drifts_in_y", prmvec_t {}) }
       , drifts_in_z { p.template get<prmvec_t>("setup.drifts_in_z", prmvec_t {}) }
       , densities { p.template get<prmvec_t>("setup.densities", prmvec_t {}) }
-      , temperatures { p.template get<prmvec_t>("setup.temperatures", prmvec_t {}) } {
+      , temperatures { p.template get<prmvec_t>("setup.temperatures", prmvec_t {}) } 
+      , drift_ux { p.template get<real_t>("setup.drift_ux") }
+       , Nsampled { p.template get<int>("setup.Nsampled") } {
       const auto nspec = p.template get<std::size_t>("particles.nspec");
 
 
@@ -78,62 +85,65 @@ namespace user {
             ONE, { temperatures[0], temperatures[1] }, { 1, 2 },
             { drift_1, drift_2 });
 
+      Kokkos::Random_XorShift64_Pool<Kokkos::DefaultHostExecutionSpace> pool(42);
+
       // injected particles
-      const auto empty = std::vector<real_t> {};
-      const auto x1_e  = params.template get<std::vector<real_t>>("setup.x1_e",
-                                                                 empty);
-      const auto x2_e  = params.template get<std::vector<real_t>>("setup.x2_e",
-                                                                 empty);
-      const auto x3_e  = params.template get<std::vector<real_t>>("setup.x3_e",
-                                                                 empty);
-      const auto phi_e = params.template get<std::vector<real_t>>("setup.phi_e",
-                                                                  empty);
-      const auto ux1_e = params.template get<std::vector<real_t>>("setup.ux1_e",
-                                                                  empty);
-      const auto ux2_e = params.template get<std::vector<real_t>>("setup.ux2_e",
-                                                                  empty);
-      const auto ux3_e = params.template get<std::vector<real_t>>("setup.ux3_e",
-                                                                  empty);
+      for (int n = 0; n < Nsampled; ++n) {
+        auto rand_gen = pool.get_state();
+        auto rand_X1  = static_cast<real_t>(rand_gen.drand(0., 1.));
+        
+        const auto x1_e  = {global_xmin + static_cast<real_t>(rand_gen.drand(0., 1.)) * (global_xmax - global_xmin)};
+        const auto x1_i  = x1_e;
 
-      const auto x1_i  = params.template get<std::vector<real_t>>("setup.x1_i",
-                                                                 empty);
-      const auto x2_i  = params.template get<std::vector<real_t>>("setup.x2_i",
-                                                                 empty);
-      const auto x3_i  = params.template get<std::vector<real_t>>("setup.x3_i",
-                                                                 empty);
-      const auto phi_i = params.template get<std::vector<real_t>>("setup.phi_i",
-                                                                  empty);
-      const auto ux1_i = params.template get<std::vector<real_t>>("setup.ux1_i",
-                                                                  empty);
-      const auto ux2_i = params.template get<std::vector<real_t>>("setup.ux2_i",
-                                                                  empty);
-      const auto ux3_i = params.template get<std::vector<real_t>>("setup.ux3_i",
-                                                                  empty);
-      std::map<std::string, std::vector<real_t>> data_e {
-        {  "x1",  x1_e },
-        {  "x2",  x2_e },
-        { "ux1", ux1_e },
-        { "ux2", ux2_e },
-        { "ux3", ux3_e }
-      };
-      std::map<std::string, std::vector<real_t>> data_i {
-        {  "x1",  x1_i },
-        {  "x2",  x2_i },
-        { "ux1", ux1_i },
-        { "ux2", ux2_i },
-        { "ux3", ux3_i }
-      };
-      if constexpr (M::CoordType == Coord::Cart or D == Dim::_3D) {
-        data_e["x3"] = x3_e;
-        data_i["x3"] = x3_i;
-      } else if constexpr (D == Dim::_2D) {
-        data_e["phi"] = phi_e;
-        data_i["phi"] = phi_i;
+        const auto x2_e  = {global_xmin + static_cast<real_t>(rand_gen.drand(0., 1.)) * (global_xmax - global_xmin)};
+        const auto x2_i  = x1_e;
+
+        const auto x3_e  = {global_xmin + static_cast<real_t>(rand_gen.drand(0., 1.)) * (global_xmax - global_xmin)};
+        const auto x3_i  = x1_e;
+
+        // electron velocities
+        const auto vx_e = static_cast<real_t>(rand_gen.drand(0., 1.));
+        const auto vy_e = static_cast<real_t>(rand_gen.drand(0., 1.));
+        const auto vz_e = static_cast<real_t>(rand_gen.drand(0., 1.));
+        const auto v_norm_e = math::sqrt(SQR(vx_e) + SQR(vy_e) + SQR(vz_e));
+        const auto ux1_e = {drift_ux * vx_e / v_norm_e};
+        const auto ux2_e = {drift_ux * vy_e / v_norm_e};
+        const auto ux3_e = {drift_ux * vz_e / v_norm_e};
+
+        // ion velocities
+        const auto vx_i = static_cast<real_t>(rand_gen.drand(0., 1.));
+        const auto vy_i = static_cast<real_t>(rand_gen.drand(0., 1.));
+        const auto vz_i = static_cast<real_t>(rand_gen.drand(0., 1.));
+        const auto v_norm_i = math::sqrt(SQR(vx_i) + SQR(vy_i) + SQR(vz_i));
+        const auto ux1_i = {drift_ux * vx_i / v_norm_i};
+        const auto ux2_i = {drift_ux * vy_i / v_norm_i};
+        const auto ux3_i = {drift_ux * vz_i / v_norm_i};
+
+        std::map<std::string, std::vector<real_t>> data_e {
+          {  "x1",  x1_e },
+          {  "x2",  x2_e },
+          { "ux1", ux1_e },
+          { "ux2", ux2_e },
+          { "ux3", ux3_e }
+        };
+        std::map<std::string, std::vector<real_t>> data_i {
+          {  "x1",  x1_i },
+          {  "x2",  x2_i },
+          { "ux1", ux1_i },
+          { "ux2", ux2_i },
+          { "ux3", ux3_i }
+        };
+        if constexpr (M::CoordType == Coord::Cart or D == Dim::_3D) {
+          data_e["x3"] = x3_e;
+          data_i["x3"] = x3_i;
+        }
+
+        arch::InjectGlobally<S, M>(global_domain, domain, (spidx_t)3, data_e);
+        arch::InjectGlobally<S, M>(global_domain, domain, (spidx_t)4, data_i);
+        
+        pool.free_state(rand_gen);
+
       }
-
-      arch::InjectGlobally<S, M>(global_domain, domain, (spidx_t)3, data_e);
-      arch::InjectGlobally<S, M>(global_domain, domain, (spidx_t)4, data_i);
-
     }
   };
 
