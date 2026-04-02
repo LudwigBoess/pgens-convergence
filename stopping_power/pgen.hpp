@@ -5,13 +5,12 @@
 #include "global.h"
 
 #include "arch/kokkos_aliases.h"
-#include "arch/traits.h"
 #include "utils/error.h"
 #include "utils/numeric.h"
 
-#include "archetypes/energy_dist.h"
-#include "archetypes/particle_injector.h"
 #include "archetypes/problem_generator.h"
+#include "archetypes/traits.h"
+#include "archetypes/utils.h"
 #include "framework/domain/domain.h"
 #include "framework/domain/metadomain.h"
 
@@ -22,10 +21,12 @@ namespace user {
   struct PGen : public arch::ProblemGenerator<S, M> {
 
     // compatibility traits for the problem generator
-    static constexpr auto engines = traits::compatible_with<SimEngine::SRPIC>::value;
-    static constexpr auto metrics = traits::compatible_with<Metric::Minkowski>::value;
+    static constexpr auto engines =
+      arch::traits::pgen::compatible_with<SimEngine::SRPIC>::value;
+    static constexpr auto metrics =
+      arch::traits::pgen::compatible_with<Metric::Minkowski>::value;
     static constexpr auto dimensions =
-      traits::compatible_with<Dim::_1D, Dim::_2D, Dim::_3D>::value;
+      arch::traits::pgen::compatible_with<Dim::_1D, Dim::_2D, Dim::_3D>::value;
 
     // for easy access to variables in the child class
     using arch::ProblemGenerator<S, M>::D;
@@ -67,31 +68,17 @@ namespace user {
     inline void InitPrtls(Domain<S, M>& domain) {
 
       // background plasma
-      const auto nspec = domain.species.size() - 2;
-      const auto drift_1  = prmvec_t { drifts_in_x[0],
-                                      drifts_in_y[0],
-                                      drifts_in_z[0] };
-      const auto drift_2  = prmvec_t { drifts_in_x[1],
-                                      drifts_in_y[1],
-                                      drifts_in_z[1] };
-      const auto injector = arch::experimental::
-        UniformInjector<S, M, arch::experimental::Maxwellian, arch::experimental::Maxwellian>(
-          arch::experimental::Maxwellian<S, M>(domain.mesh.metric,
-                                               domain.random_pool,
-                                               domain.species[1].mass() * temperatures[0],
-                                               drift_1),
-          arch::experimental::Maxwellian<S, M>(domain.mesh.metric,
-                                               domain.random_pool,
-                                               temperatures[1],
-                                               drift_2),
-          { 1, 2 });
-      arch::experimental::InjectUniform<S, M, decltype(injector)>(
-        params,
-        domain,
-        injector,
-        densities[0]);
-      
+      const auto drift_1 = prmvec_t { drifts_in_x[0],
+                                        drifts_in_y[0],
+                                        drifts_in_z[0] };
+        const auto drift_2 = prmvec_t { drifts_in_x[1],
+                                        drifts_in_y[1],
+                                        drifts_in_z[1] };
+      arch::InjectUniformMaxwellians<S, M>(params, domain, 
+            ONE, { temperatures[0], temperatures[1] }, { 1, 2 },
+            { drift_1, drift_2 });
 
+      // injected particles
       const auto empty = std::vector<real_t> {};
       const auto x1_e  = params.template get<std::vector<real_t>>("setup.x1_e",
                                                                  empty);
