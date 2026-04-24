@@ -102,22 +102,22 @@ namespace user {
         const auto x3_i  = x1_e;
 
         // electron velocities
-        const auto vx_e = static_cast<real_t>(rand_gen.drand(0., 1.));
-        const auto vy_e = static_cast<real_t>(rand_gen.drand(0., 1.));
-        const auto vz_e = static_cast<real_t>(rand_gen.drand(0., 1.));
-        const auto v_norm_e = math::sqrt(SQR(vx_e) + SQR(vy_e) + SQR(vz_e));
-        const auto ux1_e = {drift_ux * vx_e / v_norm_e};
-        const auto ux2_e = {drift_ux * vy_e / v_norm_e};
-        const auto ux3_e = {drift_ux * vz_e / v_norm_e};
+        // const auto vx_e = static_cast<real_t>(rand_gen.drand(0., 1.));
+        // const auto vy_e = static_cast<real_t>(rand_gen.drand(0., 1.));
+        // const auto vz_e = ZERO;
+        // const auto v_norm_e = math::sqrt(SQR(vx_e) + SQR(vy_e) + SQR(vz_e));
+        const auto ux1_e = {drift_ux}; //{drift_ux * vx_e / v_norm_e};
+        const auto ux2_e = {ZERO}; //{drift_ux * vy_e / v_norm_e};
+        const auto ux3_e = {ZERO}; //{drift_ux * vz_e / v_norm_e};
 
         // ion velocities
-        const auto vx_i = static_cast<real_t>(rand_gen.drand(0., 1.));
-        const auto vy_i = static_cast<real_t>(rand_gen.drand(0., 1.));
-        const auto vz_i = static_cast<real_t>(rand_gen.drand(0., 1.));
-        const auto v_norm_i = math::sqrt(SQR(vx_i) + SQR(vy_i) + SQR(vz_i));
-        const auto ux1_i = {drift_ux * vx_i / v_norm_i};
-        const auto ux2_i = {drift_ux * vy_i / v_norm_i};
-        const auto ux3_i = {drift_ux * vz_i / v_norm_i};
+        // const auto vx_i = static_cast<real_t>(rand_gen.drand(0., 1.));
+        // const auto vy_i = static_cast<real_t>(rand_gen.drand(0., 1.));
+        // const auto vz_i = ZERO;
+        // const auto v_norm_i = math::sqrt(SQR(vx_i) + SQR(vy_i) + SQR(vz_i));
+        const auto ux1_i = {ZERO}; //{drift_ux * vx_i / v_norm_i};
+        const auto ux2_i = {ZERO}; //{drift_ux * vy_i / v_norm_i};
+        const auto ux3_i = {ZERO}; //{drift_ux * vz_i / v_norm_i};
 
         std::map<std::string, std::vector<real_t>> data_e {
           {  "x1",  x1_e },
