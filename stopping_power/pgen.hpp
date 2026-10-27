@@ -5,11 +5,10 @@
 #include "global.h"
 
 #include "arch/kokkos_aliases.h"
+#include "traits/pgen.h"
 #include "utils/error.h"
 #include "utils/numeric.h"
 
-#include "archetypes/problem_generator.h"
-#include "archetypes/traits.h"
 #include "archetypes/utils.h"
 #include "framework/domain/domain.h"
 #include "framework/domain/metadomain.h"
@@ -18,22 +17,16 @@ namespace user {
   using namespace ntt;
 
   template <SimEngine::type S, class M>
-  struct PGen : public arch::ProblemGenerator<S, M> {
+  struct PGen {
+    static constexpr auto D { M::Dim };
 
     // compatibility traits for the problem generator
-    static constexpr auto engines =
-      arch::traits::pgen::compatible_with<SimEngine::SRPIC>::value;
-    static constexpr auto metrics =
-      arch::traits::pgen::compatible_with<Metric::Minkowski>::value;
-    static constexpr auto dimensions =
-      arch::traits::pgen::compatible_with<Dim::_1D, Dim::_2D, Dim::_3D>::value;
-
-    // for easy access to variables in the child class
-    using arch::ProblemGenerator<S, M>::D;
-    using arch::ProblemGenerator<S, M>::C;
-    using arch::ProblemGenerator<S, M>::params;
+    static constexpr auto engines = ::traits::pgen::compatible_with<SimEngine::SRPIC>{};
+    static constexpr auto metrics = ::traits::pgen::compatible_with<Metric::Minkowski>{};
+    static constexpr auto dimensions = ::traits::pgen::compatible_with<Dim::_1D, Dim::_2D, Dim::_3D>{};
 
     using prmvec_t = std::vector<real_t>;
+    const SimulationParams& params;
     const Metadomain<S, M>& global_domain;
 
     const real_t  global_xmin, global_xmax;
@@ -43,7 +36,7 @@ namespace user {
     const int Nsampled;
 
     inline PGen(const SimulationParams& p, const Metadomain<S, M>& global_domain)
-      : arch::ProblemGenerator<S, M> { p }
+      : params { p }
       , global_domain { global_domain }
       , global_xmin { global_domain.mesh().extent(in::x1).first }
       , global_xmax { global_domain.mesh().extent(in::x1).second }
@@ -133,7 +126,7 @@ namespace user {
           { "ux2", ux2_i },
           { "ux3", ux3_i }
         };
-        if constexpr (M::CoordType == Coord::Cart or D == Dim::_3D) {
+        if constexpr (M::CoordType == Coord::Cartesian or D == Dim::_3D) {
           data_e["x3"] = x3_e;
           data_i["x3"] = x3_i;
         }

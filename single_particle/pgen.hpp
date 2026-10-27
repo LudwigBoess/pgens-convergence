@@ -4,10 +4,9 @@
 #include "enums.h"
 #include "global.h"
 
-#include "arch/traits.h"
+#include "traits/pgen.h"
 
 #include "archetypes/particle_injector.h"
-#include "archetypes/problem_generator.h"
 #include "framework/domain/domain.h"
 #include "framework/domain/metadomain.h"
 
@@ -17,28 +16,19 @@ namespace user {
   using namespace ntt;
 
   template <SimEngine::type S, class M>
-  struct PGen : public arch::ProblemGenerator<S, M> {
+  struct PGen {
+    static constexpr auto D { M::Dim };
 
     // compatibility traits for the problem generator
-    static constexpr auto engines {
-      traits::compatible_with<SimEngine::SRPIC>::value
-    };
-    static constexpr auto metrics {
-      traits::compatible_with<Metric::Minkowski>::value
-    };
-    static constexpr auto dimensions {
-      traits::compatible_with<Dim::_1D, Dim::_2D, Dim::_3D>::value
-    };
+    static constexpr auto engines = ::traits::pgen::compatible_with<SimEngine::SRPIC>{};
+    static constexpr auto metrics = ::traits::pgen::compatible_with<Metric::Minkowski>{};
+    static constexpr auto dimensions = ::traits::pgen::compatible_with<Dim::_1D, Dim::_2D, Dim::_3D>{};
 
-    // for easy access to variables in the child class
-    using arch::ProblemGenerator<S, M>::D;
-    using arch::ProblemGenerator<S, M>::C;
-    using arch::ProblemGenerator<S, M>::params;
-
+    const SimulationParams& params;
     const Metadomain<S, M>& global_domain;
 
     inline PGen(const SimulationParams& p, const Metadomain<S, M>& global_domain)
-      : arch::ProblemGenerator<S, M> { p }
+      : params { p }
       , global_domain { global_domain } {}
 
     inline void InitPrtls(Domain<S, M>& local_domain) {
@@ -86,7 +76,7 @@ namespace user {
         { "ux2", ux2_i },
         { "ux3", ux3_i }
       };
-      if constexpr (M::CoordType == Coord::Cart or D == Dim::_3D) {
+      if constexpr (M::CoordType == Coord::Cartesian or D == Dim::_3D) {
         data_e["x3"] = x3_e;
         data_i["x3"] = x3_i;
       } else if constexpr (D == Dim::_2D) {
@@ -98,7 +88,7 @@ namespace user {
       arch::InjectGlobally<S, M>(global_domain, local_domain, (spidx_t)2, data_i);
     }
 
-    auto FixFieldsConst(const bc_in&, const em&) const -> std::pair<real_t, bool> {
+    auto FixFieldsConst(simtime_t, const bc_in&, em) const -> std::pair<real_t, bool> {
       return { ZERO, false };
     }
   };

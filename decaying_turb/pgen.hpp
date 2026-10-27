@@ -5,12 +5,12 @@
 #include "global.h"
 
 #include "arch/kokkos_aliases.h"
+#include "traits/pgen.h"
 #include "utils/error.h"
 #include "utils/numeric.h"
 
 #include "archetypes/energy_dist.h"
 #include "archetypes/particle_injector.h"
-#include "archetypes/problem_generator.h"
 #include "archetypes/utils.h"
 #include "framework/domain/domain.h"
 #include "framework/domain/metadomain.h"
@@ -152,24 +152,15 @@ namespace user {
   }
 
   template <SimEngine::type S, class M>
-  struct PGen : public arch::ProblemGenerator<S, M> {
+  struct PGen {
+    static constexpr auto D { M::Dim };
 
     // compatibility traits for the problem generator
-    static constexpr auto engines {
-      arch::traits::pgen::compatible_with<SimEngine::SRPIC>::value
-    };
-    static constexpr auto metrics {
-      arch::traits::pgen::compatible_with<Metric::Minkowski>::value
-    };
-    static constexpr auto dimensions {
-      arch::traits::pgen::compatible_with<Dim::_1D, Dim::_2D, Dim::_3D>::value
-    };
+    static constexpr auto engines = ::traits::pgen::compatible_with<SimEngine::SRPIC>{};
+    static constexpr auto metrics = ::traits::pgen::compatible_with<Metric::Minkowski>{};
+    static constexpr auto dimensions = ::traits::pgen::compatible_with<Dim::_1D, Dim::_2D, Dim::_3D>{};
 
-
-    // for easy access to variables in the child class
-    using arch::ProblemGenerator<S, M>::D;
-    using arch::ProblemGenerator<S, M>::C;
-    using arch::ProblemGenerator<S, M>::params;
+    const SimulationParams& params;
 
     const real_t                     temperature, dB;
     const real_t                     Lx, Ly, Lz;
@@ -185,7 +176,7 @@ namespace user {
     InitFields<D>      init_flds;
 
     inline PGen(const SimulationParams& p, const Metadomain<S, M>& global_domain)
-      : arch::ProblemGenerator<S, M> { p }
+      : params { p }
       , temperature { p.template get<real_t>("setup.temperature") }
       , dB { p.template get<real_t>("setup.dB", ONE) }
       , wavenumbers { init_wavenumbers<D>() }
